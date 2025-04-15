@@ -1,0 +1,212 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vote</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            color: white;
+        }
+
+        video.bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            min-width: 100%;
+            min-height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .vote-container {
+    position: relative;
+    max-width: 600px;
+    margin: 160px auto 80px;  /* Push content lower from the navbar */
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 30px;
+    border-radius: 12px;
+    z-index: 1;
+}
+
+
+        h1, h2, p {
+            text-align: center;
+        }
+
+        input[type="radio"] {
+            margin-right: 8px;
+        }
+
+        button {
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: #00e6b8;
+    transform: scale(1.05);
+    box-shadow: 0 0 10px #00ffcc;
+}
+
+button:active {
+    transform: scale(0.97);
+    background-color: #00ccaa;
+}
+input[type="radio"]:checked + button {
+    background-color: #00ffcc;
+    color: black;
+    font-weight: bold;
+}
+
+
+        form.logout {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        form.logout button {
+            background: none;
+            border: none;
+            color: red;
+            font-size: 16px;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+
+    .nav-bar {
+    position: fixed;  /* Changed from absolute */
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    padding: 12px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 999;
+}
+
+
+.nav-bar a {
+    color: #00ffcc;
+    text-decoration: none;
+    font-weight: bold;
+    margin-right: 15px;
+    font-size: 16px;
+}
+
+.logout-form {
+    display: inline;
+}
+
+.logout-form button {
+    background: none;
+    border: none;
+    color: #ff4d4d;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+    
+    </style>
+    <!-- Bootstrap CSS for modals -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+
+<!-- 🎥 Background Video -->
+<video autoplay muted loop class="bg-video">
+    <source src="{% static 'images/Vote.mp4' %}" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+
+<div class="vote-container">
+    <h1>Welcome to the Voting Page</h1>
+    <p>Hello, {{ user.username }}!</p>
+
+    <!-- 🔴 Logout Button -->
+    <form method="POST" action="{% url 'logout' %}" class="logout">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+
+    <hr>
+    <!--adding here-->
+    <div class="nav-bar">
+        <a href="{% url 'home' %}">🏠 Home</a>
+        <a href="{% url 'live_results' %}">📊 Live Results</a>
+        <a href="{% url 'blockchain_viewer' %}">⛓ Blockchain Viewer</a>
+        <form method="POST" action="{% url 'logout' %}" class="logout-form">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+    
+
+    <!-- ✅ Voting Form -->
+    <form method="POST">
+        {% csrf_token %}
+        <h2>Select a candidate:</h2>
+        <div class="row">
+            {% for candidate in candidates %}
+            <div class="col-12 mb-3">
+                <input type="radio" name="candidate" value="{{ candidate.id }}" required>
+                <button type="button" class="btn btn-link text-info" data-bs-toggle="modal" data-bs-target="#candidateModal{{ candidate.id }}">
+                    {{ candidate.name }}
+                </button>
+        
+                <!-- Modal -->
+                <div class="modal fade" id="candidateModal{{ candidate.id }}" tabindex="-1" aria-labelledby="candidateModalLabel{{ candidate.id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content text-dark">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="candidateModalLabel{{ candidate.id }}">{{ candidate.name }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-center">
+                                {% if candidate.image %}
+    <img src="{{ candidate.image.url }}" alt="{{ candidate.name }}" class="img-fluid rounded mb-3" style="max-height: 200px;">
+{% else %}
+    <p><i>No image available</i></p>
+{% endif %}
+
+                                <p>{{ candidate.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <button type="submit" id="vote-button">
+            <span id="vote-text">Submit Vote</span>
+            <span id="vote-spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+        </button>
+        
+    </form>
+</div>
+<!-- Bootstrap JS (for modal functionality) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.querySelector('form').addEventListener('submit', function () {
+        const voteBtn = document.getElementById('vote-button');
+        voteBtn.disabled = true;
+        document.getElementById('vote-text').textContent = 'Submitting...';
+        document.getElementById('vote-spinner').classList.remove('d-none');
+    });
+    </script>
+    
+</body>
+</html>

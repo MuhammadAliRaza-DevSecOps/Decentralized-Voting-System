@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Voting System{% endblock %}</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+        }
+
+        .nav {
+            background-color: #1e1e1e;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav a {
+            color: #f0db4f;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .nav a:hover {
+            text-decoration: underline;
+        }
+
+        .content {
+            padding: 30px;
+        }
+    </style>
+    <style>
+        body {
+            transition: background-color 0.3s, color 0.3s;
+        }
+    
+        body.dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+    
+        .dark-mode .vote-container {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+    
+</head>
+<body>
+
+<div class="nav">
+    <div>
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'vote' %}">Vote</a>
+        <a href="{% url 'live_results' %}">Live Results</a>
+        <a href="{% url 'blockchain_viewer' %}">Blockchain</a>
+    </div>
+    <div>
+        <form method="POST" action="{% url 'logout' %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" style="background:none; border:none; color:red; cursor:pointer;">Logout</button>
+        </form>
+    </div>
+</div>
+
+<div class="content">
+    {% block content %}{% endblock %}
+</div>
+<style>
+    .dark-toggle {
+        position: fixed;
+        top: 80px; /* Lowered so it doesn't overlap logout */
+        right: 20px;
+        background-color: rgba(0, 0, 0, 0.6);
+        padding: 6px 12px;
+        border-radius: 10px;
+        font-size: 14px;
+        z-index: 999;
+    }
+</style>
+
+<div class="dark-toggle">
+    <label>
+        🌙 <input type="checkbox" id="darkModeToggle"> Dark Mode
+    </label>
+</div>
+
+<script>
+    const toggle = document.getElementById('darkModeToggle');
+    const body = document.body;
+
+    toggle.addEventListener('change', function () {
+        body.classList.toggle('dark-mode');
+        localStorage.setItem('darkMode', body.classList.contains('dark-mode'));
+    });
+
+    // Load saved mode
+    if (localStorage.getItem('darkMode') === 'true') {
+        body.classList.add('dark-mode');
+        toggle.checked = true;
+    }
+</script>
+
+</body>
+</html>

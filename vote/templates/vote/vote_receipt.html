@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vote Receipt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background: #f5f5f5;
+        }
+        .receipt-container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+        }
+        .qr-code {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .info {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .buttons {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .btn {
+            padding: 10px 18px;
+            margin: 5px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        img.qr {
+            width: 180px;
+            height: 180px;
+        }
+
+        @media print {
+    .buttons {
+        display: none;
+    }
+    body {
+        background: white;
+    }
+}
+
+    </style>
+</head>
+<body>
+
+<div class="receipt-container" id="receipt">
+    <h2>🧾 Vote Receipt</h2>
+
+    <div class="info"><strong>Voter:</strong> {{ voter.username }}</div>
+    <div class="info"><strong>Candidate:</strong> {{ candidate.name }}</div>
+    <div class="info"><strong>Time:</strong> {{ timestamp }}</div>
+    <div class="info"><strong>Block Hash:</strong><br><code>{{ block_hash }}</code></div>
+
+    <div class="qr-code">
+        <p><strong>Vote QR Code:</strong></p>
+        <img class="qr" src="data:image/png;base64,{{ qr_code }}" alt="QR Code">
+    </div>
+
+    <div class="buttons">
+        <a class="btn" href="{% url 'generate_pdf_receipt' candidate.id %}">⬇️ Download PDF</a>
+        <button class="btn" onclick="window.print()">🖨️ Print</button>
+        <a class="btn" href="{% url 'home' %}">🏠 Home</a>
+        <a class="btn" href="{% url 'my_receipts' %}">📜 My Receipts</a>
+
+    </div>
+</div>
+
+</body>
+</html>

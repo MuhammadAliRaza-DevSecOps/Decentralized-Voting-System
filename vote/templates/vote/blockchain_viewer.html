@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blockchain Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            padding: 30px;
+        }
+        .block {
+            background: white;
+            border-left: 6px solid #007BFF;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #007BFF;
+        }
+        .label {
+            font-weight: bold;
+        }
+        .value {
+            font-family: monospace;
+            word-break: break-word;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔗 Blockchain Viewer</h1>
+    
+    {% for block in chain %}
+        <div class="block">
+            <h2>Block #{{ block.index }}</h2>
+            <p><span class="label">Timestamp:</span> {{ block.timestamp }}</p>
+            <p><span class="label">Data:</span> {{ block.data }}</p>
+            <p><span class="label">Hash:</span><br><span class="value">{{ block.hash }}</span></p>
+            <p><span class="label">Previous Hash:</span><br><span class="value">{{ block.previous_hash }}</span></p>
+        </div>
+    {% endfor %}
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Vote Receipt PDF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+        }
+        .section {
+            margin-top: 20px;
+        }
+        .section p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h2>Vote Receipt</h2>
+    <div class="section">
+        <p><strong>Voter:</strong> {{ voter.username }}</p>
+        <p><strong>Candidate:</strong> {{ candidate.name }}</p>
+        <p><strong>Timestamp:</strong> {{ timestamp }}</p>
+        <p><strong>Block Hash:</strong> {{ block_hash }}</p>
+    </div>
+</body>
+</html>

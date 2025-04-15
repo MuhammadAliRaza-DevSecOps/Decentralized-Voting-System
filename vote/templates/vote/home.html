@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            color: white;
+            font-family: sans-serif;
+            text-align: center;
+        }
+
+        .bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            min-width: 100%;
+            min-height: 100%;
+            z-index: -1;
+        }
+
+        .welcome-container {
+            position: relative;
+            top: 30%;
+        }
+
+        a {
+            color: yellow;
+            font-size: 18px;
+            margin: 10px;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        form {
+            display: inline;
+        }
+    </style>
+</head>
+<body>
+
+<video autoplay muted loop class="bg-video">
+    <source src="{% static 'images/Welcome.mp4' %}" type="video/mp4">
+</video>
+
+<div class="welcome-container">
+    <h1>Welcome to the Decentralized Voting System</h1>
+    <h2>Made by Ali Raza</h2>
+    <a href="{% url 'login' %}">Login</a> | 
+    <a href="{% url 'register' %}">Register</a>
+    <a href="{% url 'blockchain_viewer' %}" style="color: cyan; font-weight: bold; margin: 10px; display: inline-block;">
+        View Blockchain
+    </a>
+    
+
+    <form method="POST" action="{% url 'logout' %}" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" style="background: none; border: none; color: red; font-weight: bold; font-size: 16px; cursor: pointer;">
+            Logout
+        </button>
+    </form>
+</div>
+
+</body>
+</html>

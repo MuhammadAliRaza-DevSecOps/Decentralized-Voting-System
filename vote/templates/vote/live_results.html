@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Voting Results</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #111;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        canvas {
+            margin-top: 40px;
+        }
+        a {
+            color: #00ffc8;
+            text-decoration: none;
+            margin-top: 20px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>📊 Live Voting Results</h1>
+    <canvas id="votesChart" width="600" height="400"></canvas>
+
+    <a href="{% url 'vote' %}">← Back to Voting</a>
+
+    <script>
+        const ctx = document.getElementById('votesChart').getContext('2d');
+        let chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Votes',
+                    data: [],
+                    backgroundColor: 'rgba(0, 255, 200, 0.7)',
+                    borderColor: 'rgba(0, 255, 200, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        function fetchVoteData() {
+            fetch("{% url 'api_live_data' %}")
+                .then(response => response.json())
+                .then(data => {
+                    chart.data.labels = data.names;
+                    chart.data.datasets[0].data = data.votes;
+                    chart.update();
+                });
+        }
+
+        fetchVoteData();
+        setInterval(fetchVoteData, 5000);  // Refresh every 5 seconds
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vote Success</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            min-width: 100%;
+            min-height: 100%;
+            z-index: -1;
+        }
+
+        .content {
+            position: relative;
+            top: 30%;
+            z-index: 1;
+        }
+
+        h1 {
+            color: #28a745;
+            font-size: 32px;
+        }
+    </style>
+</head>
+<body>
+
+<video autoplay muted loop class="bg-video">
+    <source src="{% static 'images/thank_you.mp4' %}" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+
+<div class="content">
+    <h1>Thank you! Your vote has been recorded.<br>
+    Results will be shown as soon.</h1>
+</div>
+<a href="{% url 'vote_receipt' candidate.id %}" class="btn btn-primary">View Vote Receipt</a>
+
+</body>
+</html>
